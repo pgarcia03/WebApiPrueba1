@@ -50,7 +50,9 @@ namespace WebApiPrueba1.Controllers
                     var obj = new Porder()
                     {
                         ObjectId = Convert.ToInt32(dtr["Id_Order"].ToString()),
-                        Corte = dtr["Porder"].ToString()
+                        Corte = dtr["Porder"].ToString(),
+                        IdEstilo = Convert.ToInt32(dtr["Id_Style"].ToString()),
+                        Unidades = Convert.ToInt32(dtr["Quantity"].ToString())
 
                     };
 
@@ -82,10 +84,13 @@ namespace WebApiPrueba1.Controllers
 
                 while (dtr.Read())
                 {
-                    var obj = new Porder()
+                    var obj = new Porder()  
                     {
                         ObjectId = Convert.ToInt32(dtr["Id_Order"].ToString()),
-                        Corte = dtr["Porder"].ToString()
+                        Corte = dtr["Porder"].ToString(),
+                        IdEstilo=Convert.ToInt32(dtr["Id_Style"].ToString()),
+                        Unidades= Convert.ToInt32(dtr["Quantity"].ToString()) 
+
 
                     };
 
@@ -101,7 +106,7 @@ namespace WebApiPrueba1.Controllers
 
         // POST api/<ConexionController>
         [HttpPost]
-        public int Post([FromBody] Porder value)
+        public int Post([FromBody] Porder data)
         {
             var coneccion = Configuration["ConnectionStrings:ConeccionPrueba"];
 
@@ -110,9 +115,9 @@ namespace WebApiPrueba1.Controllers
                 cn.Open();
                 var cmm = new SqlCommand("spdCrearPorder", cn);
                 cmm.CommandType = CommandType.StoredProcedure;
-                cmm.Parameters.Add("@po", SqlDbType.NChar, 15).Value = value.Corte;
-                cmm.Parameters.Add("@unidades", SqlDbType.Int).Value = value.Unidades;
-                cmm.Parameters.Add("@idestilo", SqlDbType.Int).Value = value.IdEstilo;
+                cmm.Parameters.Add("@po", SqlDbType.NChar, 15).Value = data.Corte;
+                cmm.Parameters.Add("@unidades", SqlDbType.Int).Value = data.Unidades;
+                cmm.Parameters.Add("@idestilo", SqlDbType.Int).Value = data.IdEstilo;
 
                 var resp=  cmm.ExecuteNonQuery();
 
@@ -123,7 +128,7 @@ namespace WebApiPrueba1.Controllers
 
         // PUT api/<ConexionController>/5
         [HttpPut("{id}")]
-        public int Put(int id, [FromBody] Porder value)
+        public int Put(int id, [FromBody] Porder data)
         {
             var conecction = Configuration["ConnectionStrings:ConeccionPrueba"];
 
@@ -134,10 +139,10 @@ namespace WebApiPrueba1.Controllers
                 var command = new SqlCommand("spdActualizarPorder", cn);
                 command.CommandType = CommandType.StoredProcedure;
 
-                command.Parameters.Add("@id",SqlDbType.Int).Value=value.ObjectId;
-                command.Parameters.Add("@po",SqlDbType.NChar,15).Value=value.Corte;
-                command.Parameters.Add("@unidades",SqlDbType.Int).Value=value.Unidades;
-                command.Parameters.Add("@idestilo", SqlDbType.Int).Value = value.IdEstilo;
+                command.Parameters.Add("@id",SqlDbType.Int).Value=data.ObjectId;
+                command.Parameters.Add("@po",SqlDbType.NChar,15).Value=data.Corte;
+                command.Parameters.Add("@unidades",SqlDbType.Int).Value=data.Unidades;
+                command.Parameters.Add("@idestilo", SqlDbType.Int).Value = data.IdEstilo;
 
                 var resp = command.ExecuteNonQuery();
 

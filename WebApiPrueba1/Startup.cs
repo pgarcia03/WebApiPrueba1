@@ -27,6 +27,7 @@ namespace WebApiPrueba1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+           // services.AddCors(option=>option.AddPolicy("nombre",builder=>builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -59,8 +60,12 @@ namespace WebApiPrueba1
             app.UseRouting();
 
             app.UseAuthorization();
+
             app.UseCors("allowedApp");
+
             //app.UseCors(CorsConfiguration);
+
+            //app.UseCors("nombre");
 
             app.UseEndpoints(endpoints =>
             {

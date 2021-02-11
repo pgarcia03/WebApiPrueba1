@@ -44,8 +44,9 @@ namespace WebApiPrueba1.Controllers
                     var obj = new Estilo()
                     {
                         NombreEstilo = dr["Style"].ToString(),
-                        ObjectId = Convert.ToInt32(dr["Id_Style"].ToString())
-                        // Estado= Convert.ToBoolean(dr["washed"])
+                        ObjectId = Convert.ToInt32(dr["Id_Style"].ToString()),
+                        Precio= float.Parse(dr["Price"].ToString()),
+                        Estado= bool.Parse(dr["washed"].ToString())
                     };
 
 
