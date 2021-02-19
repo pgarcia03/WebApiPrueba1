@@ -22,20 +22,20 @@ namespace WebApiPrueba1.Controllers
             Configuration = configuration;
         }
 
-         
+
         [HttpGet("{id}")]
-        public  ActionResult get(int id)
+        public ActionResult get(int id)
         {
             string connectionString = Configuration["ConnectionStrings:ConeccionPrueba"];
             var lista = new List<Porder>();
-            using (SqlConnection con=new SqlConnection(connectionString))
+            using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-                SqlCommand command = new SqlCommand("getporderXid",con);
+                SqlCommand command = new SqlCommand("getporderXid", con);
 
                 command.CommandType = CommandType.StoredProcedure;
-                
-                command.Parameters.AddWithValue("@id",id);
+
+                command.Parameters.AddWithValue("@id", id);
 
                 SqlDataReader dtr = command.ExecuteReader();
 
@@ -59,13 +59,49 @@ namespace WebApiPrueba1.Controllers
                     lista.Add(obj);
 
                 }
-               //;
+                //;
 
                 return Ok(lista);
 
             }
         }
 
+        [HttpGet("{corte},{test}")]
+        public ActionResult get(string corte,string test)
+        {
+            string connectionString = Configuration["ConnectionStrings:ConeccionPrueba"];
+            var lista = new List<Porder>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                SqlCommand command = new SqlCommand("spdConstainPorder", con);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@corte", corte);
+
+                SqlDataReader dtr = command.ExecuteReader();
+
+                while (dtr.Read())
+                {
+                    var obj = new Porder()
+                    {
+                        //ObjectId = Convert.ToInt32(dtr["Id_Order"].ToString()),
+                        Corte = dtr["porder"].ToString(),
+                        Estilo = dtr["style"].ToString(),
+                        Unidades = Convert.ToInt32(dtr["quantity"].ToString()),
+                        descr= dtr["descr"].ToString()
+
+                    };
+
+                    lista.Add(obj);
+
+                }
+               
+
+                return Ok(lista);
+
+            }
+        }
+     
         [HttpGet]
         public ActionResult get()
         {
@@ -90,8 +126,6 @@ namespace WebApiPrueba1.Controllers
                         Corte = dtr["Porder"].ToString(),
                         IdEstilo=Convert.ToInt32(dtr["Id_Style"].ToString()),
                         Unidades= Convert.ToInt32(dtr["Quantity"].ToString()) 
-
-
                     };
 
                     lista.Add(obj);

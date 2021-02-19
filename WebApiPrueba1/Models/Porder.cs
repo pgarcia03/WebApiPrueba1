@@ -12,5 +12,7 @@ namespace WebApiPrueba1.Models
         public int Unidades{ get; set; }
         public int IdEstilo { get; set; }
         public string Estilo { get; set; }
+        public string descr { get; set; }
+
     }
 }

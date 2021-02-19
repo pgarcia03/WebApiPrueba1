@@ -14,4 +14,6 @@ namespace WebApiPrueba1.Models
         public bool estado { get; set; }
         public DateTime fechaRegistro { get; set; }
     }
+
+  
 }
