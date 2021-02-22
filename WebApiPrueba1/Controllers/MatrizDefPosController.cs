@@ -24,6 +24,7 @@ namespace WebApiPrueba1.Controllers
             this.Configuration = configuration;
         }
 
+        /*
         [HttpGet("{id}")]
         public ActionResult get(int id)
         {
@@ -39,8 +40,6 @@ namespace WebApiPrueba1.Controllers
                                                    + " where m.Id_Modulo =" + id + " and mpd.descProducto = 'P'", con);
 
                 command.CommandType = CommandType.Text;
-
-                //  command.Parameters.AddWithValue("@id", id);
 
                 SqlDataReader dtr = command.ExecuteReader();
 
@@ -78,6 +77,31 @@ namespace WebApiPrueba1.Controllers
                 //                                                         }).ToList();
 
                 return Ok(lista);
+
+            }
+        }
+        */
+        [HttpGet("{corte}")]
+        public async Task<ActionResult> total(string corte)
+        {
+            string connection = Configuration["ConnectionStrings:ConeccionPrueba"];
+
+            using (SqlConnection con =new SqlConnection(connection))
+            {
+                con.Open();
+
+                SqlCommand command = new SqlCommand("select isnull(sum(r.cantidad),0) as total from tbRegistroReparacion r where rtrim(ltrim(r.Corte))="+ corte ,con);
+                command.CommandType = CommandType.Text;
+
+                var rd =await command.ExecuteReaderAsync();
+
+                var total = 0;// rd.ReadAsync;
+                while( await rd.ReadAsync())
+                {
+                    total =int.Parse(rd["total"].ToString());
+                }
+
+                return Ok(total);
 
             }
         }
