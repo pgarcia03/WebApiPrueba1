@@ -24,50 +24,52 @@ namespace WebApiPrueba1.Controllers
 
 
         [HttpGet("{id}")]
-        public ActionResult get(int id)
+        public IEnumerable<Porder> get(int id)
         {
-            string connectionString = Configuration["ConnectionStrings:ConeccionPrueba"];
+
+
+            //string connectionString = Configuration["ConnectionStrings:ConeccionPrueba"];
             var lista = new List<Porder>();
-            using (SqlConnection con = new SqlConnection(connectionString))
+            //using (SqlConnection con = new SqlConnection(connectionString))
+            //{
+            //    con.Open();
+            //    SqlCommand command = new SqlCommand("getporderXid", con);
+
+            //    command.CommandType = CommandType.StoredProcedure;
+
+            //    command.Parameters.AddWithValue("@id", id);
+
+            //    SqlDataReader dtr = command.ExecuteReader();
+
+            //SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
+            //DataTable dt = new DataTable();
+            //dataAdapter.Fill(dt);
+
+            // var r = dtr.Read();
+
+            //  while (dtr.Read()) // (dtr.Read())
+            // {
+            var obj = new Porder()
             {
-                con.Open();
-                SqlCommand command = new SqlCommand("getporderXid", con);
+                ObjectId = 1,// Convert.ToInt32(dtr["Id_Order"].ToString()),
+                Corte = "corte",//dtr["Porder"].ToString(),
+                IdEstilo = 10,//Convert.ToInt32(dtr["Id_Style"].ToString()),
+                Unidades = 1152//Convert.ToInt32(dtr["Quantity"].ToString())
 
-                command.CommandType = CommandType.StoredProcedure;
+            };
 
-                command.Parameters.AddWithValue("@id", id);
+            lista.Add(obj);
 
-                SqlDataReader dtr = command.ExecuteReader();
+            //  }
+            //;
 
-                //SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
-                //DataTable dt = new DataTable();
-                //dataAdapter.Fill(dt);
+            return lista.AsEnumerable();
 
-                // var r = dtr.Read();
-
-                while (dtr.Read()) // (dtr.Read())
-                {
-                    var obj = new Porder()
-                    {
-                        ObjectId = Convert.ToInt32(dtr["Id_Order"].ToString()),
-                        Corte = dtr["Porder"].ToString(),
-                        IdEstilo = Convert.ToInt32(dtr["Id_Style"].ToString()),
-                        Unidades = Convert.ToInt32(dtr["Quantity"].ToString())
-
-                    };
-
-                    lista.Add(obj);
-
-                }
-                //;
-
-                return Ok(lista);
-
-            }
+            // }
         }
 
         [HttpGet("{corte},{test}")]
-        public ActionResult get(string corte,string test)
+        public ActionResult get(string corte, string test)
         {
             string connectionString = Configuration["ConnectionStrings:ConeccionPrueba"];
             var lista = new List<Porder>();
@@ -88,55 +90,82 @@ namespace WebApiPrueba1.Controllers
                         Corte = dtr["porder"].ToString(),
                         Estilo = dtr["style"].ToString(),
                         Unidades = Convert.ToInt32(dtr["quantity"].ToString()),
-                        descr= dtr["descr"].ToString()
+                        descr = dtr["descr"].ToString()
 
                     };
 
                     lista.Add(obj);
 
                 }
-               
+
 
                 return Ok(lista);
 
             }
         }
-     
+
         [HttpGet]
-        public ActionResult get()
+        public IEnumerable<Porder> get()
         {
-            string connectionString = Configuration["ConnectionStrings:ConeccionPrueba"];
-            var lista = new List<Porder>();
-            using (SqlConnection con = new SqlConnection(connectionString))
+            try
             {
-                con.Open();
-                SqlCommand command = new SqlCommand("getporderAll", con);
-
-                command.CommandType = CommandType.StoredProcedure;
-
-                SqlDataReader dtr = command.ExecuteReader();
-
-                ///var r = dtr.Read();
-
-                while (dtr.Read())
+                string connectionString = Configuration["ConnectionStrings:ConeccionPrueba"];
+                var lista = new List<Porder>();
+                using (SqlConnection con = new SqlConnection(connectionString))
                 {
-                    var obj = new Porder()  
-                    {
-                        ObjectId = Convert.ToInt32(dtr["Id_Order"].ToString()),
-                        Corte = dtr["Porder"].ToString(),
-                        IdEstilo=Convert.ToInt32(dtr["Id_Style"].ToString()),
-                        Unidades= Convert.ToInt32(dtr["Quantity"].ToString()) 
-                    };
+                    con.Open();
+                    SqlCommand command = new SqlCommand("getporderAll", con);
 
-                    lista.Add(obj);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    SqlDataReader dtr = command.ExecuteReader();
+
+                    ///var r = dtr.Read();
+                    //var h = 10 / Convert;
+
+                    while (dtr.Read())
+                    {
+                        var obj = new Porder()
+                        {
+                            ObjectId = Convert.ToInt32(dtr["Id_Order"].ToString()),
+                            Corte = dtr["Porder"].ToString(),
+                            IdEstilo = Convert.ToInt32(dtr["Id_Style"].ToString()),
+                            Unidades = Convert.ToInt32(dtr["Quantity"].ToString())
+                        };
+
+                        lista.Add(obj);
+
+                    }
+                    //;
+
+                    return lista.AsEnumerable();
 
                 }
-               //;
-
-                return Ok(lista);
-
             }
+            catch (Exception ex)
+            {
+                var obj = new Porder()
+                {
+                    ObjectId =1,// Convert.ToInt32(dtr["Id_Order"].ToString()),
+                    Corte =ex.Message,// dtr["Porder"].ToString(),
+                    IdEstilo =1,// Convert.ToInt32(dtr["Id_Style"].ToString()),
+                    Unidades = 1152//Convert.ToInt32(dtr["Quantity"].ToString())
+                };
+
+                var lista = new List<Porder>();
+
+                lista.Add(obj);
+
+                return lista.AsEnumerable();
+
+                //return //Ok(ex.Message);
+                   //throw;
+               }
+
         }
+
+
+
 
         // POST api/<ConexionController>
         [HttpPost]
@@ -144,7 +173,7 @@ namespace WebApiPrueba1.Controllers
         {
             var coneccion = Configuration["ConnectionStrings:ConeccionPrueba"];
 
-            using (SqlConnection cn =new SqlConnection(coneccion))
+            using (SqlConnection cn = new SqlConnection(coneccion))
             {
                 cn.Open();
                 var cmm = new SqlCommand("spdCrearPorder", cn);
@@ -153,9 +182,9 @@ namespace WebApiPrueba1.Controllers
                 cmm.Parameters.Add("@unidades", SqlDbType.Int).Value = data.Unidades;
                 cmm.Parameters.Add("@idestilo", SqlDbType.Int).Value = data.IdEstilo;
 
-                var resp=  cmm.ExecuteNonQuery();
+                var resp = cmm.ExecuteNonQuery();
 
-                return  resp;
+                return resp;
             }
 
         }
@@ -166,16 +195,16 @@ namespace WebApiPrueba1.Controllers
         {
             var conecction = Configuration["ConnectionStrings:ConeccionPrueba"];
 
-            using (SqlConnection cn=new SqlConnection(conecction))
+            using (SqlConnection cn = new SqlConnection(conecction))
             {
                 cn.Open();
 
                 var command = new SqlCommand("spdActualizarPorder", cn);
                 command.CommandType = CommandType.StoredProcedure;
 
-                command.Parameters.Add("@id",SqlDbType.Int).Value=data.ObjectId;
-                command.Parameters.Add("@po",SqlDbType.NChar,15).Value=data.Corte;
-                command.Parameters.Add("@unidades",SqlDbType.Int).Value=data.Unidades;
+                command.Parameters.Add("@id", SqlDbType.Int).Value = data.ObjectId;
+                command.Parameters.Add("@po", SqlDbType.NChar, 15).Value = data.Corte;
+                command.Parameters.Add("@unidades", SqlDbType.Int).Value = data.Unidades;
                 command.Parameters.Add("@idestilo", SqlDbType.Int).Value = data.IdEstilo;
 
                 var resp = command.ExecuteNonQuery();
@@ -191,23 +220,23 @@ namespace WebApiPrueba1.Controllers
         {
             var conecction = Configuration["ConnectionStrings:ConeccionPrueba"];
 
-            using (SqlConnection cn=new SqlConnection(conecction))
+            using (SqlConnection cn = new SqlConnection(conecction))
             {
                 cn.Open();
 
                 SqlCommand commnad = new SqlCommand("spdEliminarPorder", cn);
                 commnad.CommandType = CommandType.StoredProcedure;
 
-                commnad.Parameters.Add("@id",SqlDbType.Int).Value=id;
+                commnad.Parameters.Add("@id", SqlDbType.Int).Value = id;
 
                 var resp = commnad.ExecuteNonQuery();
 
-                return resp; 
+                return resp;
             }
 
 
         }
-       
+
 
     }
 }

@@ -48,7 +48,9 @@ namespace WebApiPrueba1.Controllers
                 //dataAdapter.Fill(dt);
 
                 // var r = dtr.Read();
-
+        */
+     //*********************
+        /*
                 while (dtr.Read()) // (dtr.Read())
                 {
                     var obj = new Reparacion()
@@ -81,6 +83,8 @@ namespace WebApiPrueba1.Controllers
             }
         }
         */
+
+
         [HttpGet("{corte}")]
         public async Task<ActionResult> total(string corte)
         {
@@ -104,6 +108,7 @@ namespace WebApiPrueba1.Controllers
                 return Ok(total);
 
             }
+
         }
 
         [HttpGet("{id}&{desc}&{corte}")]
